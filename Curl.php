@@ -267,9 +267,9 @@ class Curl
             $this->unsetOption(CURLOPT_WRITEFUNCTION);
         } else {
             $this->setOption(CURLOPT_WRITEFUNCTION, function ($curl, $data) use (&$body) {
-                $body .= $data;
-                return mb_strlen($data, '8bit');
-            });
+                    $body .= $data;
+                    return mb_strlen($data, '8bit');
+                });
         }
 
 
@@ -318,9 +318,11 @@ class Curl
                 return $this->response;
             }
         } elseif ($this->responseCode >= 400 && $this->responseCode <= 510) { // client and server errors return false.
-            return false;
+            $this->response = $raw ? $this->response : Json::decode($this->response);
+            return $this->response;
         } else { //any other status code or custom codes
-            return true;
+            $this->response = $raw ? $this->response : Json::decode($this->response);
+            return $this->response;
         }
     }
 }
